@@ -178,7 +178,9 @@ private:
         T* newBlock = static_cast<T*>(::operator new(newCapacity * sizeof(T)));
         if(newCapacity < m_size) m_size = newCapacity;
 
-        for(size_t i=0; i<m_size; i++) newBlock[i] = move(m_data[i]);
+        for(size_t i=0; i<m_size; i++){
+            new(&newBlock[i]) T(move(m_data[i]));
+        }
         for(size_t i=0; i<m_size; i++) m_data[i].~T();
 
         ::operator delete(m_data, m_capacity * sizeof(T));
