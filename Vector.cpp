@@ -2,8 +2,56 @@
 
 using namespace std;
 
+template<typename Vector>
+class VectorIterator{
+public:
+    using ValueType = typename Vector::ValueType;
+    using PointerType = ValueType*;
+    using ReferenceType = ValueType&;
+public:
+    VectorIterator(PointerType ptr) : m_ptr(ptr) {}
+    VectorIterator& operator++(){
+        m_ptr++;
+        return *this;
+    }
+    VectorIterator operator++(int){
+        VectorIterator temp = *this;
+        ++(*this);
+        return temp;
+    }
+    VectorIterator& operator--(){
+        m_ptr--;
+        return *this;
+    }
+    VectorIterator operator--(int){
+        VectorIterator temp = *this;
+        --(*this);
+        return temp;
+    }
+    ReferenceType operator[](int index){
+        return *(m_ptr + index);
+    }
+    ReferenceType operator*(){
+        return *m_ptr;
+    }
+    PointerType operator->(){
+        return m_ptr;
+    }
+    bool operator==(const VectorIterator& other) const{
+        return m_ptr == other.m_ptr;
+    }
+    bool operator!=(const VectorIterator& other) const{
+        return m_ptr != other.m_ptr;
+    }
+private:
+    PointerType m_ptr;
+};
+
 template<typename T>
 class Vector{
+public:
+    using ValueType = T;
+    using Iterator = VectorIterator<Vector<T>>;
 public:
     Vector(){
         Realloc(2);
@@ -114,6 +162,14 @@ public:
         return const_cast<T&>(static_cast<const Vector&>(*this)[index]);
     }
 
+    Iterator begin(){
+        return Iterator(m_data);
+    }
+
+    Iterator end(){
+        return Iterator(m_data + m_size);
+    }
+
 private:
     T* m_data = nullptr;
     size_t m_size = 0, m_capacity = 0;
@@ -153,5 +209,15 @@ int main(){
     vec2.EmplaceBack(4);
     vec2.EmplaceBack(5);
     PrintVector(vec2);
+    
+    Vector<int> vec3(vec2);
+    PrintVector(vec3);
+
+    // print using iterators
+    for (auto it = vec3.begin(); it != vec3.end(); ++it) {
+        cout << *it << " ";
+    }
+    cout << endl;
+
     return 0;
 }
