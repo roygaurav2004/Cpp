@@ -14,7 +14,7 @@ private:
     T* m_ptr = nullptr;
     ControlBlock* cb = nullptr;
 public:
-    explicit Shared_Ptr(T* rhs) : m_ptr(rhs), cb(new ControlBlock) {}
+    explicit Shared_Ptr(T* rhs) : m_ptr(rhs), cb(rhs ? new ControlBlock : nullptr) {}
     explicit Shared_Ptr() : m_ptr(nullptr), cb(nullptr) {}
 
     ~Shared_Ptr(){
@@ -79,7 +79,15 @@ public:
         return cb ? cb->ref_count.load() : 0;
     }
 
+    void reset(T* rhs = nullptr) {
+        if (m_ptr == rhs && rhs != nullptr) return;
+        Shared_Ptr(rhs).swap(*this);
+    }
 
+    void swap(Shared_Ptr& other) noexcept {
+        std::swap(m_ptr, other.m_ptr);
+        std::swap(cb, other.cb);
+    }
 };
 
 int main(){
@@ -101,6 +109,12 @@ int main(){
     // null sharedptr
     Shared_Ptr<int> sp4;
     std::cout << "Value: " << (sp4 ? *sp4 : 0) << ", Use count: " << sp4.use_count() << std::endl;
+
+    // check reset
+    Shared_Ptr<int> sp5(new int(30));
+    std::cout << "Value: " << *sp5 << ", Use count: " << sp5.use_count() << std::endl;
+    sp5.reset();
+    std::cout << "Value: " << (sp5 ? *sp5 : 0) << ", Use count: " << sp5.use_count() << std::endl;
 
     return 0;
 }
