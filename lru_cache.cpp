@@ -29,8 +29,8 @@ public:
         delete tail;
     }
 
-    int get(const Key& key){
-        if(cache.find(key) == cache.end()) return -1;
+    Value get(const Key& key){
+        if(cache.find(key) == cache.end()) return Value();
         Node* node = cache[key];
         node = removeNode(node);
         node = insertAtHead(node);
