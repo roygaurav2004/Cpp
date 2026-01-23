@@ -122,7 +122,7 @@ public:
         if(m_size >= m_capacity){
             Realloc(m_capacity + m_capacity/2);
         }
-        m_data[m_size] = value;
+        new(&m_data[m_size]) T(value);
         m_size++;
     }
 
