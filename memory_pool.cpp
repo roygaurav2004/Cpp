@@ -8,17 +8,21 @@ private:
         Node* next; // Used when the block is FREE
         char data[sizeof(T)]; // Used when the block is ALLOCATED
     };
-
+    int size;
     Node* buf;
     Node* front;
 
 public:
-    explicit memory_pool(size_t sz) {
+    explicit memory_pool(size_t sz) : size(sz) {
         buf = static_cast<Node*>(::operator new(sz * sizeof(Node)));
         for (size_t i = 0; i < sz; ++i) {
             buf[i].next = (i + 1 < sz) ? &buf[i+1] : nullptr;
         }
         front = buf;
+    }
+
+    ~memory_pool(){
+        ::operator delete(buf, size * sizeof(Node));
     }
     
     T* allocate() {
