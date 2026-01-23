@@ -21,10 +21,18 @@ int count_true(First first, Rest... rest) {
     return (first ? 1 : 0) + count_true<Rest...>(rest...);
 }
 
+template<typename... Bools>
+int count_true_2(Bools... bools){
+    return (0 + ... + (bools ? 1 : 0));
+}
+
 int main() {
     std::cout << count_true(true, false, true) << std::endl;  // Output: 2
     std::cout << count_true(false, false, false) << std::endl; // Output: 0
     std::cout << count_true(true, true, true) << std::endl;   // Output: 3
+    std::cout << count_true_2(true, false, true) << std::endl;  // Output: 2
+    std::cout << count_true_2(false, false, false) << std::endl; // Output: 0
+    std::cout << count_true_2(true, true, true) << std::endl;   // Output: 3
     return 0;
 }
 
