@@ -170,6 +170,17 @@ public:
         return Iterator(m_data + m_size);
     }
 
+    Iterator erase(Iterator pos){
+        Iterator next = pos;
+        ++next;
+        for (Iterator it = pos; it != end(); ++it) {
+            *it = std::move(*next);
+            ++next;
+        }
+        PopBack();
+        return pos;
+    }
+
 private:
     T* m_data = nullptr;
     size_t m_size = 0, m_capacity = 0;
