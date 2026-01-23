@@ -22,6 +22,7 @@ public:
     }
 
     ~memory_pool(){
+        for(int i=0; i<size; i++) buf[i].~Node();
         ::operator delete(buf, size * sizeof(Node));
     }
     
