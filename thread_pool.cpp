@@ -54,6 +54,7 @@ private:
 
             auto task = move(tasks.front());
             tasks.pop();
+            lock.unlock();
             task();
         }
     }
