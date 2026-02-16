@@ -7,13 +7,12 @@
 #include <utility>
 #include <iostream>
 
-int count_true(){
-    return 0;
-}
+template<typename... Types>
+int count_true(Types... args);
 
-template<typename First>
-int count_true(First first) {
-    return (first ? 1 : 0);
+template<>
+int count_true() {
+    return 0;
 }
 
 template<typename First, typename... Rest>
@@ -35,4 +34,3 @@ int main() {
     std::cout << count_true_2(true, true, true) << std::endl;   // Output: 3
     return 0;
 }
-
